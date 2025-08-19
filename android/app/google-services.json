@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1062488302030",
+    "project_id": "digitallocker-3e853",
+    "storage_bucket": "digitallocker-3e853.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062488302030:android:e1e630869c69ef29648b9f",
+        "android_client_info": {
+          "package_name": "com.hunza.Digital_Locker_App"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9-JIIC3huKdQzx57kXg2Dp4hxGyiGwF4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

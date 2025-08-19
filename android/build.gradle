@@ -1,0 +1,79 @@
+ // android/build.gradle
+
+buildscript {
+    ext.safeExtGet = { prop, fallback ->
+        rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+    }
+    repositories {
+        google()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.0.4")
+        classpath("com.google.gms:google-services:4.3.10") // Include Google services classpath
+    }
+}
+
+def isNewArchitectureEnabled() {
+    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    namespace = "com.digitallockerapp" // Set your app's package name
+    compileSdkVersion safeExtGet('compileSdkVersion', 31)
+
+    defaultConfig {
+        applicationId "com.digitallockerapp" // Make sure this matches your package name
+        minSdkVersion safeExtGet('minSdkVersion', 21)
+        targetSdkVersion safeExtGet('targetSdkVersion', 31)
+        versionCode 1
+        versionName "1.0"
+        buildConfigField("boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString())
+    }
+
+    sourceSets {
+        main {
+            if (isNewArchitectureEnabled()) {
+                java.srcDirs += ['src/newarch']
+            } else {
+                java.srcDirs += ['src/oldarch']
+            }
+        }
+    }
+
+    // Disable Hermes
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            // Disable Hermes for release build as well
+            buildConfigField("boolean", "IS_HERMES_ENABLED", "fure")
+        }
+        debug {
+            // Disable Hermes for debug build
+            buildConfigField("boolean", "IS_HERMES_ENABLED", "true")
+        }
+    }
+}
+
+repositories {
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$projectDir/../node_modules/react-native/android"
+    }
+    mavenCentral()
+    google()
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:31.1.0') // Firebase BOM
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore' // Firestore dependency
+    implementation 'com.facebook.react:react-native:+' // React Native dependency
+}
+
+// Apply the Google services plugin at the end
+apply plugin: 'com.google.gms.google-services'
